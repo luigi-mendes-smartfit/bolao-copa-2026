@@ -1,4 +1,3 @@
-```markdown
 # 🏆 Bolão Copa do Mundo 2026 - Smart Fit
 
 Dashboard ao vivo para o bolão da Copa do Mundo 2026 entre colaboradores Smart Fit.
@@ -55,4 +54,3 @@ Página de acompanhamento em tempo real do bolão interno da Copa do Mundo 2026.
 ## 📄 Licença
 
 Projeto interno Smart Fit — uso pessoal.
-```
