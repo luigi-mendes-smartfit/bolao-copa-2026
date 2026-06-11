@@ -2,10 +2,7 @@
 
 Dashboard ao vivo para o bolão da Copa do Mundo 2026 entre colaboradores Smart Fit.
 
-🔗 **[Acessar Dashboard](https://luigi-mendes-smartfit.github.io/bolao-copa-2026/)**
-
-![Smart Fit](https://img.shields.io/badge/Smart%20Fit-FFD100?style=for-the-badge&logo=data:image/svg+xml;base64,&logoColor=black)
-![Copa 2026](https://img.shields.io/badge/Copa%20do%20Mundo-2026-000000?style=for-the-badge)
+### 🔗 [Acessar Dashboard](https://luigi-mendes-smartfit.github.io/bolao-copa-2026/)
 
 ---
 
