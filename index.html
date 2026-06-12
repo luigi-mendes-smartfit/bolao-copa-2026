@@ -772,7 +772,7 @@ async function fetchSheetData(sheetName, range) {
 
 // ===== LOAD STATISTICS DATA =====
 async function loadStatsData() {
-  const data = await fetchSheetData(SHEET_ESTATISTICAS, 'A2:AE60');
+  const data = await fetchSheetData(SHEET_ESTATISTICAS, 'A2:AF60');
   if (!data || !data.rows) return;
 
   allBets = data.rows
@@ -781,10 +781,12 @@ async function loadStatsData() {
       const g = (i) => (r.c && r.c[i] && r.c[i].v != null) ? r.c[i].v : null;
       return {
         name: g(0),
-        j1_bra: g(1), j1_opp: g(2),
-        j2_bra: g(3), j2_opp: g(4),
-        j3_home: g(5), j3_bra: g(6),
-        groups: GROUP_LETTERS.map((_, gi) => ({ first: g(7 + gi*2), second: g(8 + gi*2) }))
+        // Col B = Área (skip), C=J1_BRA, D=J1_OPP, E=J2_BRA, F=J2_OPP, G=J3_HOME, H=J3_BRA
+        // I onwards = Groups (pairs)
+        j1_bra: g(2), j1_opp: g(3),
+        j2_bra: g(4), j2_opp: g(5),
+        j3_home: g(6), j3_bra: g(7),
+        groups: GROUP_LETTERS.map((_, gi) => ({ first: g(8 + gi*2), second: g(9 + gi*2) }))
       };
     });
 }
