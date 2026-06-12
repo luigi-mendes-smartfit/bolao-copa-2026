@@ -645,14 +645,14 @@ a { color: var(--gold); text-decoration: none; }
 const SPREADSHEET_ID = '12ucdsBnoiniqtFHCXEcIcMOVAgpQ8JWncgeoh_N55ls';
 
 // Sheet names (adjust if different)
-const SHEET_PONTUACAO = 'Pontuação';
+const SHEET_RANKING = 'Ranking';
 const SHEET_GABARITO = 'Gabarito';
 
 // Brazil match dates (for countdown)
 const BRAZIL_MATCHES = [
   { date: new Date('2026-06-13T22:00:00Z'), label: '🇧🇷 Brasil x Marrocos 🇲🇦', dateStr: 'Sáb 13/06 • 19h' },
   { date: new Date('2026-06-20T01:00:00Z'), label: '🇧🇷 Brasil x Haiti 🇭🇹', dateStr: 'Sex 19/06 • 22h' },
-  { date: new Date('2026-06-24T22:00:00Z'), label: '🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia x Brasil 🇧🇷', dateStr: 'Qua 24/06 • 19h' },
+  { date: new Date('2026-06-24T22:00:00Z'), label: '🏴 Escócia x Brasil 🇧🇷', dateStr: 'Qua 24/06 • 19h' },
 ];
 
 // ===== FETCH DATA FROM GOOGLE SHEETS =====
@@ -672,16 +672,17 @@ async function fetchSheetData(sheetName, range) {
 
 // ===== RENDER RANKING =====
 async function loadRanking() {
-  const data = await fetchSheetData(SHEET_PONTUACAO, 'A4:U53');
+  // Puxa da aba Ranking: A=#, B=Nome, C=TOTAL, D=Placares Exatos, E=Posições Cravadas
+  const data = await fetchSheetData(SHEET_RANKING, 'A4:E53');
   if (!data || !data.rows) return;
 
   const participants = data.rows
-    .filter(r => r.c && r.c[0] && r.c[0].v)
+    .filter(r => r.c && r.c[1] && r.c[1].v)
     .map(r => ({
-      name: r.c[0] ? r.c[0].v : '',
-      total: r.c[18] ? (r.c[18].v || 0) : 0,
-      placares: r.c[19] ? (r.c[19].v || 0) : 0,
-      posicoes: r.c[20] ? (r.c[20].v || 0) : 0,
+      name: r.c[1] ? r.c[1].v : '',
+      total: r.c[2] ? (r.c[2].v || 0) : 0,
+      placares: r.c[3] ? (r.c[3].v || 0) : 0,
+      posicoes: r.c[4] ? (r.c[4].v || 0) : 0,
     }))
     .sort((a, b) => b.total - a.total || b.placares - a.placares || b.posicoes - a.posicoes);
 
@@ -713,7 +714,7 @@ async function loadMatches() {
   const matchesData = [
     { home: '🇧🇷', homeName: 'Brasil', away: '🇲🇦', awayName: 'Marrocos', date: 'Sáb 13/06 • 19h' },
     { home: '🇧🇷', homeName: 'Brasil', away: '🇭🇹', awayName: 'Haiti', date: 'Sex 19/06 • 22h' },
-    { home: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', homeName: 'Escócia', away: '🇧🇷', awayName: 'Brasil', date: 'Qua 24/06 • 19h' },
+    { home: '🏴', homeName: 'Escócia', away: '🇧🇷', awayName: 'Brasil', date: 'Qua 24/06 • 19h' },
   ];
 
   let html = '';
