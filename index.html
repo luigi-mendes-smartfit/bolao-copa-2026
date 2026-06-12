@@ -642,7 +642,7 @@ a { color: var(--gold); text-decoration: none; }
 <script>
 // ===== CONFIGURATION =====
 // IMPORTANT: Replace with your Google Sheets ID (the part between /d/ and /edit in the URL)
-const SPREADSHEET_ID = '12ucdsBnoiniqtFHCXEcIcMOVAgpQ8JWncgeoh_N55ls';
+const SPREADSHEET_ID = '__SPREADSHEET_ID__';
 
 // Sheet names (adjust if different)
 const SHEET_RANKING = 'Ranking';
@@ -652,7 +652,7 @@ const SHEET_GABARITO = 'Gabarito';
 const BRAZIL_MATCHES = [
   { date: new Date('2026-06-13T22:00:00Z'), label: '🇧🇷 Brasil x Marrocos 🇲🇦', dateStr: 'Sáb 13/06 • 19h' },
   { date: new Date('2026-06-20T01:00:00Z'), label: '🇧🇷 Brasil x Haiti 🇭🇹', dateStr: 'Sex 19/06 • 22h' },
-  { date: new Date('2026-06-24T22:00:00Z'), label: '🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia x Brasil 🇧🇷', dateStr: 'Qua 24/06 • 19h' },
+  { date: new Date('2026-06-24T22:00:00Z'), label: '🏴 Escócia x Brasil 🇧🇷', dateStr: 'Qua 24/06 • 19h' },
 ];
 
 // ===== FETCH DATA FROM GOOGLE SHEETS =====
@@ -714,7 +714,7 @@ async function loadMatches() {
   const matchesData = [
     { home: '🇧🇷', homeName: 'Brasil', away: '🇲🇦', awayName: 'Marrocos', date: 'Sáb 13/06 • 19h' },
     { home: '🇧🇷', homeName: 'Brasil', away: '🇭🇹', awayName: 'Haiti', date: 'Sex 19/06 • 22h' },
-    { home: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', homeName: 'Escócia', away: '🇧🇷', awayName: 'Brasil', date: 'Qua 24/06 • 19h' },
+    { home: '🏴', homeName: 'Escócia', away: '🇧🇷', awayName: 'Brasil', date: 'Qua 24/06 • 19h' },
   ];
 
   let html = '';
