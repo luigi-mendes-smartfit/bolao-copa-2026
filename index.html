@@ -330,10 +330,10 @@ a { color: var(--color-link, var(--color-primary)); }</style>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🏆 Bolão Copa 2026 - Smart Fit</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏆</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet">
 <style>
-/* ===== CONFIGURATION ===== */
 :root {
   --gold: #FFD100;
   --gold-dark: #C9A500;
@@ -349,8 +349,6 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   --radius: 12px;
   --shadow: 0 4px 24px rgba(255, 209, 0, 0.08);
 }
-
-/* ===== RESET & BASE ===== */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Inter', -apple-system, sans-serif;
@@ -361,7 +359,6 @@ body {
 }
 a { color: var(--gold); text-decoration: none; }
 
-/* ===== LOADING STATE ===== */
 .loading-shimmer {
   background: linear-gradient(90deg, var(--dark-card) 25%, #1f1f1f 50%, var(--dark-card) 75%);
   background-size: 200% 100%;
@@ -450,10 +447,11 @@ a { color: var(--gold); text-decoration: none; }
 
 /* ===== MATCH CARDS ===== */
 .matches-grid { display: flex; flex-direction: column; gap: 14px; }
+.match-card-wrapper { position: relative; }
 .match-card {
   background: var(--dark-card); border: 1px solid #222; border-radius: var(--radius);
   padding: 20px; display: flex; align-items: center; justify-content: space-between;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s; cursor: pointer;
 }
 .match-card:hover { border-color: var(--gold); }
 .match-team { display: flex; align-items: center; gap: 10px; flex: 1; }
@@ -468,20 +466,78 @@ a { color: var(--gold); text-decoration: none; }
 .match-score .separator { color: var(--gray); font-size: 20px; }
 .match-score.pending { font-size: 13px; color: var(--gray); font-weight: 600; }
 .match-date { font-size: 11px; color: var(--gold); font-weight: 600; margin-top: 2px; }
+.match-hint { text-align: center; font-size: 10px; color: var(--gray); margin-top: 4px; opacity: 0; transition: opacity 0.2s; }
+.match-card-wrapper:hover .match-hint { opacity: 1; }
+
+/* ===== MATCH TOOLTIP ===== */
+.match-tooltip {
+  display: none; background: rgba(10,10,10,0.97); border: 1px solid var(--gold);
+  border-radius: var(--radius); padding: 16px; margin-top: 8px;
+  animation: fadeIn 0.2s ease;
+}
+.match-card-wrapper.expanded .match-tooltip { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.tooltip-group { margin-bottom: 12px; }
+.tooltip-group:last-child { margin-bottom: 0; }
+.tooltip-group-title { font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--gold); }
+.tooltip-person { font-size: 12px; color: var(--gray-light); padding: 3px 0; display: flex; justify-content: space-between; }
+.tooltip-person .tp-name { color: var(--white); font-weight: 500; }
+.tooltip-person .tp-score { color: var(--gold); font-weight: 700; }
 
 /* ===== GROUPS ===== */
 .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.group-card-wrapper { position: relative; }
 .group-card {
   background: var(--dark-card); border: 1px solid #222; border-radius: var(--radius);
-  overflow: hidden; transition: border-color 0.2s;
+  overflow: hidden; transition: border-color 0.2s; cursor: pointer;
 }
 .group-card:hover { border-color: var(--gold); }
 .group-header { background: var(--gold); color: var(--black); padding: 8px 14px; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
 .group-team { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #1f1f1f; font-size: 13px; }
 .group-team:last-child { border-bottom: none; }
 .group-pos { font-weight: 800; color: var(--gold); width: 22px; }
-.group-team-flag { font-size: 18px; }
 .group-pending { padding: 10px 14px; color: var(--gray); font-size: 12px; font-style: italic; }
+
+/* ===== GROUP TOOLTIP ===== */
+.group-tooltip {
+  display: none; background: rgba(10,10,10,0.97); border: 1px solid var(--gold);
+  border-radius: var(--radius); padding: 14px; margin-top: 8px;
+  animation: fadeIn 0.2s ease; position: absolute; z-index: 50; width: 100%; min-width: 240px;
+}
+.group-card-wrapper.expanded .group-tooltip { display: block; }
+.group-vote-section { margin-bottom: 10px; }
+.group-vote-section:last-child { margin-bottom: 0; }
+.group-vote-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.vote-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; }
+.vote-bar-label { min-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vote-bar-track { flex: 1; height: 14px; background: #222; border-radius: 7px; overflow: hidden; }
+.vote-bar-fill { height: 100%; background: var(--gold); border-radius: 7px; transition: width 0.4s ease; min-width: 2px; }
+.vote-bar-pct { min-width: 32px; text-align: right; color: var(--gray-light); font-weight: 600; }
+
+/* ===== STATISTICS ===== */
+.stats-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+.stat-card { background: var(--dark-card); border: 1px solid #222; border-radius: var(--radius); padding: 20px; }
+.stat-card-title { font-size: 14px; font-weight: 700; color: var(--gold); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.stat-match-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--white); }
+.stat-result-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.stat-result-icon { font-size: 14px; width: 20px; }
+.stat-result-label { font-size: 12px; min-width: 100px; color: var(--gray-light); }
+.stat-result-bar { flex: 1; height: 18px; background: #222; border-radius: 9px; overflow: hidden; position: relative; }
+.stat-result-fill { height: 100%; border-radius: 9px; display: flex; align-items: center; padding-left: 8px; font-size: 10px; font-weight: 700; color: var(--black); transition: width 0.5s ease; }
+.stat-result-fill.win { background: var(--green); }
+.stat-result-fill.draw { background: var(--gold); }
+.stat-result-fill.loss { background: var(--red); }
+.stat-result-count { margin-left: 8px; font-size: 11px; color: var(--gray-light); }
+.stat-top-score { background: var(--dark-card-hover); border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+.stat-top-score-label { font-size: 11px; color: var(--gray); }
+.stat-top-score-value { font-size: 18px; font-weight: 800; color: var(--gold); }
+.stat-top-score-pct { font-size: 11px; color: var(--gray-light); }
+
+.stat-group-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.stat-group-item { background: var(--dark-card-hover); border-radius: 8px; padding: 12px; }
+.stat-group-name { font-size: 12px; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+.stat-group-fav { font-size: 13px; margin-bottom: 2px; }
+.stat-group-pct { font-size: 11px; color: var(--gray-light); }
 
 /* ===== RULES ===== */
 .rules-accordion { display: flex; flex-direction: column; gap: 8px; }
@@ -517,6 +573,8 @@ a { color: var(--gold); text-decoration: none; }
   .ranking-table { font-size: 12px; }
   .ranking-table td, .ranking-table th { padding: 8px 6px; }
   .groups-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .stat-group-grid { grid-template-columns: 1fr; }
+  .group-tooltip { position: relative; }
 }
 </style>
 </head>
@@ -538,6 +596,7 @@ a { color: var(--gold); text-decoration: none; }
   <div class="nav-tab active" data-tab="ranking">🏅 Ranking</div>
   <div class="nav-tab" data-tab="matches">⚽ Jogos do Brasil</div>
   <div class="nav-tab" data-tab="groups">🌍 Grupos</div>
+  <div class="nav-tab" data-tab="stats">📊 Estatísticas</div>
   <div class="nav-tab" data-tab="rules">📋 Regras</div>
 </nav>
 
@@ -555,6 +614,7 @@ a { color: var(--gold); text-decoration: none; }
 <!-- ===== MATCHES SECTION ===== -->
 <div class="section" id="matches">
   <div class="section-title">⚽ Jogos do Brasil — Grupo C</div>
+  <p style="font-size:12px;color:var(--gray);margin-bottom:16px;">Clique no jogo para ver os palpites de cada participante</p>
   <div class="matches-grid" id="matches-content">
     <div class="loading-shimmer" style="height:80px"></div>
     <div class="loading-shimmer" style="height:80px"></div>
@@ -565,10 +625,20 @@ a { color: var(--gold); text-decoration: none; }
 <!-- ===== GROUPS SECTION ===== -->
 <div class="section" id="groups">
   <div class="section-title">🌍 Classificação dos Grupos</div>
+  <p style="font-size:12px;color:var(--gray);margin-bottom:16px;">Clique no grupo para ver a distribuição dos palpites</p>
   <div class="groups-grid" id="groups-content">
     <div class="loading-shimmer" style="height:100px"></div>
     <div class="loading-shimmer" style="height:100px"></div>
     <div class="loading-shimmer" style="height:100px"></div>
+  </div>
+</div>
+
+<!-- ===== STATISTICS SECTION ===== -->
+<div class="section" id="stats">
+  <div class="section-title">📊 Estatísticas do Bolão</div>
+  <div id="stats-content">
+    <div class="loading-shimmer" style="height:200px;margin-bottom:12px"></div>
+    <div class="loading-shimmer" style="height:200px"></div>
   </div>
 </div>
 
@@ -641,19 +711,50 @@ a { color: var(--gold); text-decoration: none; }
 
 <script>
 // ===== CONFIGURATION =====
-// IMPORTANT: Replace with your Google Sheets ID (the part between /d/ and /edit in the URL)
 const SPREADSHEET_ID = '__SPREADSHEET_ID__';
 
-// Sheet names (adjust if different)
+// Sheet names in the PUBLIC spreadsheet
 const SHEET_RANKING = 'Ranking';
 const SHEET_GABARITO = 'Gabarito';
+const SHEET_ESTATISTICAS = 'Estatisticas';
+// Estatisticas sheet structure (in public spreadsheet):
+// A = Nome
+// B = Gols BRA (Jogo 1: Brasil x Marrocos)
+// C = Gols OPP (Jogo 1: Marrocos)
+// D = Gols BRA (Jogo 2: Brasil x Haiti)
+// E = Gols OPP (Jogo 2: Haiti)
+// F = Gols HOME (Jogo 3: Escócia)
+// G = Gols BRA (Jogo 3: Brasil)
+// H = Grp A 1º, I = Grp A 2º
+// J = Grp B 1º, K = Grp B 2º
+// L = Grp C 1º, M = Grp C 2º
+// N = Grp D 1º, O = Grp D 2º
+// P = Grp E 1º, Q = Grp E 2º
+// R = Grp F 1º, S = Grp F 2º
+// T = Grp G 1º, U = Grp G 2º
+// V = Grp H 1º, W = Grp H 2º
+// X = Grp I 1º, Y = Grp I 2º
+// Z = Grp J 1º, AA = Grp J 2º
+// AB = Grp K 1º, AC = Grp K 2º
+// AD = Grp L 1º, AE = Grp L 2º
 
-// Brazil match dates (for countdown)
+// Brazil match schedule
 const BRAZIL_MATCHES = [
   { date: new Date('2026-06-13T22:00:00Z'), label: '🇧🇷 Brasil x Marrocos 🇲🇦', dateStr: 'Sáb 13/06 • 19h' },
   { date: new Date('2026-06-20T01:00:00Z'), label: '🇧🇷 Brasil x Haiti 🇭🇹', dateStr: 'Sex 19/06 • 22h' },
   { date: new Date('2026-06-24T22:00:00Z'), label: '🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia x Brasil 🇧🇷', dateStr: 'Qua 24/06 • 19h' },
 ];
+
+const MATCH_INFO = [
+  { home: '🇧🇷', homeName: 'Brasil', away: '🇲🇦', awayName: 'Marrocos', date: 'Sáb 13/06 • 19h', brIdx: 0 },
+  { home: '🇧🇷', homeName: 'Brasil', away: '🇭🇹', awayName: 'Haiti', date: 'Sex 19/06 • 22h', brIdx: 0 },
+  { home: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', homeName: 'Escócia', away: '🇧🇷', awayName: 'Brasil', date: 'Qua 24/06 • 19h', brIdx: 1 },
+];
+
+const GROUP_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+
+// Global data store for stats
+let allBets = [];
 
 // ===== FETCH DATA FROM GOOGLE SHEETS =====
 async function fetchSheetData(sheetName, range) {
@@ -661,7 +762,6 @@ async function fetchSheetData(sheetName, range) {
   try {
     const res = await fetch(url);
     const text = await res.text();
-    // gviz returns JSONP-like: google.visualization.Query.setResponse({...})
     const json = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1));
     return json.table;
   } catch (e) {
@@ -670,9 +770,27 @@ async function fetchSheetData(sheetName, range) {
   }
 }
 
+// ===== LOAD STATISTICS DATA =====
+async function loadStatsData() {
+  const data = await fetchSheetData(SHEET_ESTATISTICAS, 'A2:AE60');
+  if (!data || !data.rows) return;
+
+  allBets = data.rows
+    .filter(r => r.c && r.c[0] && r.c[0].v)
+    .map(r => {
+      const g = (i) => (r.c && r.c[i] && r.c[i].v != null) ? r.c[i].v : null;
+      return {
+        name: g(0),
+        j1_bra: g(1), j1_opp: g(2),
+        j2_bra: g(3), j2_opp: g(4),
+        j3_home: g(5), j3_bra: g(6),
+        groups: GROUP_LETTERS.map((_, gi) => ({ first: g(7 + gi*2), second: g(8 + gi*2) }))
+      };
+    });
+}
+
 // ===== RENDER RANKING =====
 async function loadRanking() {
-  // Puxa da aba Ranking: A=#, B=Nome, C=TOTAL, D=Placares Exatos, E=Posições Cravadas
   const data = await fetchSheetData(SHEET_RANKING, 'A4:E53');
   if (!data || !data.rows) return;
 
@@ -706,58 +824,110 @@ async function loadRanking() {
   document.getElementById('ranking-content').innerHTML = html;
 }
 
-// ===== RENDER BRAZIL MATCHES =====
+// ===== RENDER BRAZIL MATCHES WITH TOOLTIPS =====
 async function loadMatches() {
   const data = await fetchSheetData(SHEET_GABARITO, 'A5:C7');
   if (!data || !data.rows) return;
 
-  const matchesData = [
-    { home: '🇧🇷', homeName: 'Brasil', away: '🇲🇦', awayName: 'Marrocos', date: 'Sáb 13/06 • 19h' },
-    { home: '🇧🇷', homeName: 'Brasil', away: '🇭🇹', awayName: 'Haiti', date: 'Sex 19/06 • 22h' },
-    { home: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', homeName: 'Escócia', away: '🇧🇷', awayName: 'Brasil', date: 'Qua 24/06 • 19h' },
-  ];
-
   let html = '';
   for (let i = 0; i < 3; i++) {
-    const m = matchesData[i];
+    const m = MATCH_INFO[i];
     const row = data.rows[i];
     const score1 = row && row.c && row.c[1] && row.c[1].v !== null ? row.c[1].v : null;
     const score2 = row && row.c && row.c[2] && row.c[2].v !== null ? row.c[2].v : null;
     const hasScore = score1 !== null && score2 !== null;
 
-    html += `<div class="match-card">
-      <div class="match-team">
-        <span class="match-flag">${m.home}</span>
-        <div><div class="match-team-name">${m.homeName}</div><div class="match-date">${m.date}</div></div>
+    // Build tooltip data from allBets
+    let tooltipHtml = buildMatchTooltip(i);
+
+    html += `<div class="match-card-wrapper" onclick="this.classList.toggle('expanded')">
+      <div class="match-card">
+        <div class="match-team">
+          <span class="match-flag">${m.home}</span>
+          <div><div class="match-team-name">${m.homeName}</div><div class="match-date">${m.date}</div></div>
+        </div>
+        <div class="match-score ${!hasScore ? 'pending' : ''}">
+          ${hasScore ? `${score1} <span class="separator">x</span> ${score2}` : 'A jogar'}
+        </div>
+        <div class="match-team away">
+          <div><div class="match-team-name">${m.awayName}</div></div>
+          <span class="match-flag">${m.away}</span>
+        </div>
       </div>
-      <div class="match-score ${!hasScore ? 'pending' : ''}">
-        ${hasScore ? `${score1} <span class="separator">x</span> ${score2}` : 'A jogar'}
-      </div>
-      <div class="match-team away">
-        <div><div class="match-team-name">${m.awayName}</div></div>
-        <span class="match-flag">${m.away}</span>
-      </div>
+      <div class="match-hint">▼ Clique para ver palpites</div>
+      <div class="match-tooltip">${tooltipHtml}</div>
     </div>`;
   }
 
   document.getElementById('matches-content').innerHTML = html;
 }
 
-// ===== RENDER GROUPS =====
+function buildMatchTooltip(matchIdx) {
+  if (allBets.length === 0) return '<div style="color:var(--gray);font-size:12px;">Carregando palpites...</div>';
+
+  let wins = [], draws = [], losses = [];
+
+  allBets.forEach(bet => {
+    let brScore, oppScore, label;
+    if (matchIdx === 0) {
+      brScore = bet.j1_bra; oppScore = bet.j1_opp;
+    } else if (matchIdx === 1) {
+      brScore = bet.j2_bra; oppScore = bet.j2_opp;
+    } else {
+      brScore = bet.j3_bra; oppScore = bet.j3_home;
+    }
+
+    if (brScore == null || oppScore == null) return;
+
+    const item = { name: bet.name, br: brScore, opp: oppScore };
+    if (matchIdx === 2) {
+      // Jogo 3: Escócia x Brasil — display is HOME x AWAY (opp x br)
+      item.display = `${oppScore} x ${brScore}`;
+    } else {
+      item.display = `${brScore} x ${oppScore}`;
+    }
+
+    if (brScore > oppScore) wins.push(item);
+    else if (brScore === oppScore) draws.push(item);
+    else losses.push(item);
+  });
+
+  let html = '';
+  if (wins.length) {
+    html += `<div class="tooltip-group"><div class="tooltip-group-title">✅ Vitória Brasil (${wins.length})</div>`;
+    wins.forEach(p => html += `<div class="tooltip-person"><span class="tp-name">${p.name}</span><span class="tp-score">${p.display}</span></div>`);
+    html += '</div>';
+  }
+  if (draws.length) {
+    html += `<div class="tooltip-group"><div class="tooltip-group-title">🤝 Empate (${draws.length})</div>`;
+    draws.forEach(p => html += `<div class="tooltip-person"><span class="tp-name">${p.name}</span><span class="tp-score">${p.display}</span></div>`);
+    html += '</div>';
+  }
+  if (losses.length) {
+    html += `<div class="tooltip-group"><div class="tooltip-group-title">❌ Derrota Brasil (${losses.length})</div>`;
+    losses.forEach(p => html += `<div class="tooltip-person"><span class="tp-name">${p.name}</span><span class="tp-score">${p.display}</span></div>`);
+    html += '</div>';
+  }
+
+  return html || '<div style="color:var(--gray);font-size:12px;">Nenhum palpite disponível</div>';
+}
+
+// ===== RENDER GROUPS WITH TOOLTIPS =====
 async function loadGroups() {
   const data = await fetchSheetData(SHEET_GABARITO, 'A10:C21');
   if (!data || !data.rows) return;
 
-  const groupLetters = ['A','B','C','D','E','F','G','H','I','J','K','L'];
   let html = '';
-
   for (let i = 0; i < 12; i++) {
     const row = data.rows[i];
     const first = row && row.c && row.c[1] ? row.c[1].v : null;
     const second = row && row.c && row.c[2] ? row.c[2].v : null;
 
-    html += `<div class="group-card">
-      <div class="group-header">GRUPO ${groupLetters[i]}</div>`;
+    let tooltipHtml = buildGroupTooltip(i);
+
+    html += `<div class="group-card-wrapper" onclick="this.classList.toggle('expanded')">
+      <div class="group-card">
+        <div class="group-header">GRUPO ${GROUP_LETTERS[i]}</div>`;
 
     if (first) {
       html += `<div class="group-team"><span class="group-pos">1º</span> <span>${first}</span></div>`;
@@ -766,10 +936,180 @@ async function loadGroups() {
       html += `<div class="group-pending">Aguardando resultados...</div>`;
     }
 
-    html += '</div>';
+    html += `</div><div class="group-tooltip">${tooltipHtml}</div></div>`;
   }
 
   document.getElementById('groups-content').innerHTML = html;
+}
+
+function buildGroupTooltip(groupIdx) {
+  if (allBets.length === 0) return '<div style="color:var(--gray);font-size:12px;">Carregando...</div>';
+
+  const total = allBets.length;
+  let firstCounts = {}, secondCounts = {};
+
+  allBets.forEach(bet => {
+    const grp = bet.groups[groupIdx];
+    if (grp.first) firstCounts[grp.first] = (firstCounts[grp.first] || 0) + 1;
+    if (grp.second) secondCounts[grp.second] = (secondCounts[grp.second] || 0) + 1;
+  });
+
+  const sortedFirst = Object.entries(firstCounts).sort((a,b) => b[1] - a[1]);
+  const sortedSecond = Object.entries(secondCounts).sort((a,b) => b[1] - a[1]);
+
+  let html = '';
+
+  html += '<div class="group-vote-section"><div class="group-vote-title">🥇 Votado como 1º</div>';
+  sortedFirst.forEach(([team, count]) => {
+    const pct = Math.round(count / total * 100);
+    html += `<div class="vote-bar-row">
+      <span class="vote-bar-label">${team}</span>
+      <div class="vote-bar-track"><div class="vote-bar-fill" style="width:${pct}%"></div></div>
+      <span class="vote-bar-pct">${pct}%</span>
+    </div>`;
+  });
+  html += '</div>';
+
+  html += '<div class="group-vote-section"><div class="group-vote-title">🥈 Votado como 2º</div>';
+  sortedSecond.forEach(([team, count]) => {
+    const pct = Math.round(count / total * 100);
+    html += `<div class="vote-bar-row">
+      <span class="vote-bar-label">${team}</span>
+      <div class="vote-bar-track"><div class="vote-bar-fill" style="width:${pct}%"></div></div>
+      <span class="vote-bar-pct">${pct}%</span>
+    </div>`;
+  });
+  html += '</div>';
+
+  return html;
+}
+
+// ===== RENDER STATISTICS TAB =====
+function renderStats() {
+  if (allBets.length === 0) {
+    document.getElementById('stats-content').innerHTML = '<div style="color:var(--gray);text-align:center;padding:40px;">Estatísticas aparecem após o encerramento das inscrições</div>';
+    return;
+  }
+
+  const total = allBets.length;
+  let html = '<div class="stats-grid">';
+
+  // ---- Match stats ----
+  html += '<div class="stat-card"><div class="stat-card-title">⚽ Palpites — Jogos do Brasil</div>';
+
+  const matchNames = ['Brasil x Marrocos', 'Brasil x Haiti', 'Escócia x Brasil'];
+  for (let mi = 0; mi < 3; mi++) {
+    let wins = 0, draws = 0, losses = 0;
+    let scoreCounts = {};
+
+    allBets.forEach(bet => {
+      let br, opp;
+      if (mi === 0) { br = bet.j1_bra; opp = bet.j1_opp; }
+      else if (mi === 1) { br = bet.j2_bra; opp = bet.j2_opp; }
+      else { br = bet.j3_bra; opp = bet.j3_home; }
+
+      if (br == null || opp == null) return;
+      if (br > opp) wins++;
+      else if (br === opp) draws++;
+      else losses++;
+
+      const key = mi === 2 ? `${opp} x ${br}` : `${br} x ${opp}`;
+      scoreCounts[key] = (scoreCounts[key] || 0) + 1;
+    });
+
+    const topScore = Object.entries(scoreCounts).sort((a,b) => b[1] - a[1])[0];
+    const validTotal = wins + draws + losses;
+
+    html += `<div style="margin-bottom:20px;">
+      <div class="stat-match-title">${matchNames[mi]}</div>
+      <div class="stat-result-row">
+        <span class="stat-result-icon">✅</span>
+        <span class="stat-result-label">Vitória Brasil</span>
+        <div class="stat-result-bar"><div class="stat-result-fill win" style="width:${validTotal ? (wins/validTotal*100) : 0}%">${validTotal ? Math.round(wins/validTotal*100) : 0}%</div></div>
+        <span class="stat-result-count">${wins}</span>
+      </div>
+      <div class="stat-result-row">
+        <span class="stat-result-icon">🤝</span>
+        <span class="stat-result-label">Empate</span>
+        <div class="stat-result-bar"><div class="stat-result-fill draw" style="width:${validTotal ? (draws/validTotal*100) : 0}%">${validTotal ? Math.round(draws/validTotal*100) : 0}%</div></div>
+        <span class="stat-result-count">${draws}</span>
+      </div>
+      <div class="stat-result-row">
+        <span class="stat-result-icon">❌</span>
+        <span class="stat-result-label">Derrota Brasil</span>
+        <div class="stat-result-bar"><div class="stat-result-fill loss" style="width:${validTotal ? (losses/validTotal*100) : 0}%">${validTotal ? Math.round(losses/validTotal*100) : 0}%</div></div>
+        <span class="stat-result-count">${losses}</span>
+      </div>`;
+
+    if (topScore) {
+      html += `<div class="stat-top-score">
+        <span class="stat-top-score-label">Placar mais votado: </span>
+        <span class="stat-top-score-value">${topScore[0]}</span>
+        <span class="stat-top-score-pct"> — ${Math.round(topScore[1]/validTotal*100)}% (${topScore[1]} votos)</span>
+      </div>`;
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // ---- Group stats ----
+  html += '<div class="stat-card"><div class="stat-card-title">🌍 Favoritos por Grupo</div>';
+  html += '<div class="stat-group-grid">';
+
+  GROUP_LETTERS.forEach((letter, gi) => {
+    let firstCounts = {}, secondCounts = {};
+    allBets.forEach(bet => {
+      const grp = bet.groups[gi];
+      if (grp.first) firstCounts[grp.first] = (firstCounts[grp.first] || 0) + 1;
+      if (grp.second) secondCounts[grp.second] = (secondCounts[grp.second] || 0) + 1;
+    });
+
+    const topFirst = Object.entries(firstCounts).sort((a,b) => b[1]-a[1])[0];
+    const topSecond = Object.entries(secondCounts).sort((a,b) => b[1]-a[1])[0];
+
+    html += `<div class="stat-group-item">
+      <div class="stat-group-name">Grupo ${letter}</div>`;
+    if (topFirst) {
+      html += `<div class="stat-group-fav">1º: ${topFirst[0]} <span style="color:var(--gray-light)">(${Math.round(topFirst[1]/total*100)}%)</span></div>`;
+    }
+    if (topSecond) {
+      html += `<div class="stat-group-fav">2º: ${topSecond[0]} <span style="color:var(--gray-light)">(${Math.round(topSecond[1]/total*100)}%)</span></div>`;
+    }
+    html += '</div>';
+  });
+
+  html += '</div></div>';
+
+  // ---- Fun facts ----
+  html += `<div class="stat-card"><div class="stat-card-title">🎯 Curiosidades</div>`;
+
+  // Average goals predicted for Brazil across all 3 matches
+  let totalBrGoals = 0, goalCount = 0;
+  allBets.forEach(bet => {
+    if (bet.j1_bra != null) { totalBrGoals += bet.j1_bra; goalCount++; }
+    if (bet.j2_bra != null) { totalBrGoals += bet.j2_bra; goalCount++; }
+    if (bet.j3_bra != null) { totalBrGoals += bet.j3_bra; goalCount++; }
+  });
+  const avgGoals = goalCount ? (totalBrGoals / goalCount).toFixed(1) : '—';
+
+  html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;">
+    <div style="background:var(--dark-card-hover);border-radius:8px;padding:14px;text-align:center;">
+      <div style="font-size:28px;font-weight:900;color:var(--gold);">${total}</div>
+      <div style="font-size:11px;color:var(--gray-light);">Participantes</div>
+    </div>
+    <div style="background:var(--dark-card-hover);border-radius:8px;padding:14px;text-align:center;">
+      <div style="font-size:28px;font-weight:900;color:var(--gold);">${avgGoals}</div>
+      <div style="font-size:11px;color:var(--gray-light);">Média gols BR / jogo</div>
+    </div>
+    <div style="background:var(--dark-card-hover);border-radius:8px;padding:14px;text-align:center;">
+      <div style="font-size:28px;font-weight:900;color:var(--gold);">R$ ${total * 20}</div>
+      <div style="font-size:11px;color:var(--gray-light);">Premiação total</div>
+    </div>
+  </div>`;
+  html += '</div>';
+
+  html += '</div>';
+  document.getElementById('stats-content').innerHTML = html;
 }
 
 // ===== COUNTDOWN =====
@@ -818,13 +1158,16 @@ document.querySelectorAll('.rule-header').forEach(header => {
 
 // ===== INIT & AUTO-REFRESH =====
 async function loadAll() {
+  await loadStatsData();
   await Promise.all([loadRanking(), loadMatches(), loadGroups()]);
+  renderStats();
   updateCountdown();
 }
 
 loadAll();
-setInterval(loadAll, 300000); // Refresh every 5 minutes
-setInterval(updateCountdown, 60000); // Update countdown every minute
+setInterval(loadAll, 300000);
+setInterval(updateCountdown, 60000);
 </script>
+
 
 </body></html>
