@@ -326,6 +326,23 @@ a { color: var(--gold); text-decoration: none; }
 .gt-voter-pick { color: var(--gray-light); }
 .gt-voter-pts { font-weight: 800; min-width: 22px; text-align: right; }
 
+/* ===== BRACKET / CHAVEAMENTO ===== */
+.ko-round-title { font-size: 13px; font-weight: 800; color: var(--gold); margin: 24px 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+.ko-round-title:first-child { margin-top: 0; }
+.ko-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.ko-match { background: var(--dark-card); border: 1px solid #222; border-radius: var(--radius); padding: 12px 14px; }
+.ko-match-head { font-size: 10px; color: var(--gray); margin-bottom: 8px; letter-spacing: .3px; }
+.ko-match-head .ko-jogo { color: var(--gold); font-weight: 700; }
+.ko-side { display: flex; align-items: center; gap: 6px; padding: 5px 0; font-size: 13px; min-height: 28px; }
+.ko-vs { text-align: center; font-size: 10px; color: var(--gray); font-weight: 700; padding: 1px 0; }
+.ko-team { font-weight: 600; }
+.ko-team.confirmed { color: var(--white); }
+.ko-check { color: var(--green); font-size: 12px; font-weight: 700; }
+.ko-prov { font-size: 9px; color: var(--gold); border: 1px solid var(--gold); border-radius: 10px; padding: 0 6px; }
+.ko-slot { color: var(--gray-light); font-size: 12px; border: 1px dashed #3a3a3a; border-radius: 6px; padding: 2px 8px; cursor: help; }
+.ko-slot.third { border-style: dotted; color: var(--gray); }
+.ko-ref { color: var(--gray-light); font-size: 12px; font-style: italic; }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   .match-card { flex-direction: column; gap: 10px; text-align: center; }
@@ -360,6 +377,7 @@ a { color: var(--gold); text-decoration: none; }
   <div class="nav-tab active" data-tab="ranking" tabindex="0" role="button">🏅 Ranking</div>
   <div class="nav-tab" data-tab="matches" tabindex="0" role="button">⚽ Jogos do Brasil</div>
   <div class="nav-tab" data-tab="groups" tabindex="0" role="button">🌍 Grupos</div>
+  <div class="nav-tab" data-tab="bracket" tabindex="0" role="button">🏆 Chaveamento</div>
   <div class="nav-tab" data-tab="stats" tabindex="0" role="button">📊 Estatísticas</div>
   <div class="nav-tab" data-tab="rules" tabindex="0" role="button">📋 Regras</div>
 </nav>
@@ -394,6 +412,17 @@ a { color: var(--gold); text-decoration: none; }
     <div class="loading-shimmer" style="height:100px"></div>
     <div class="loading-shimmer" style="height:100px"></div>
     <div class="loading-shimmer" style="height:100px"></div>
+  </div>
+</div>
+
+<!-- ===== BRACKET SECTION ===== -->
+<div class="section" id="bracket">
+  <div class="section-title">🏆 Chaveamento — Copa 2026</div>
+  <p style="font-size:12px;color:var(--gray);margin-bottom:16px;">1º e 2º de cada grupo + os 8 melhores 3ºs. Bandeira com ✓ = vaga confirmada (no fim da 1ª fase). Passe o mouse num confronto indefinido para ver os candidatos.</p>
+  <div id="bracket-content">
+    <div class="loading-shimmer" style="height:90px;margin-bottom:10px"></div>
+    <div class="loading-shimmer" style="height:90px;margin-bottom:10px"></div>
+    <div class="loading-shimmer" style="height:90px"></div>
   </div>
 </div>
 
@@ -509,6 +538,67 @@ const MATCH_INFO = [
 
 const MATCH_NAMES = ['Brasil x Marrocos', 'Brasil x Haiti', 'Escócia x Brasil'];
 const GROUP_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+
+// Elenco de cada grupo (mesmas strings da master) — usado só para mostrar
+// os candidatos quando o 1º/2º de um grupo ainda não está definido.
+const GROUP_TEAMS = {
+  A: ['🇿🇦 África do Sul', '🇰🇷 Coreia do Sul', '🇲🇽 México', '🇨🇿 Tchéquia'],
+  B: ['🇧🇦 Bósnia e Herz.', '🇨🇦 Canadá', '🇶🇦 Catar', '🇨🇭 Suíça'],
+  C: ['🇧🇷 Brasil', '🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia', '🇭🇹 Haiti', '🇲🇦 Marrocos'],
+  D: ['🇦🇺 Austrália', '🇺🇸 Estados Unidos', '🇵🇾 Paraguai', '🇹🇷 Turquia'],
+  E: ['🇩🇪 Alemanha', '🇨🇮 Costa do Marfim', '🇨🇼 Curaçao', '🇪🇨 Equador'],
+  F: ['🇳🇱 Holanda', '🇯🇵 Japão', '🇸🇪 Suécia', '🇹🇳 Tunísia'],
+  G: ['🇧🇪 Bélgica', '🇪🇬 Egito', '🇮🇷 Irã', '🇳🇿 Nova Zelândia'],
+  H: ['🇸🇦 Arábia Saudita', '🇨🇻 Cabo Verde', '🇪🇸 Espanha', '🇺🇾 Uruguai'],
+  I: ['🇫🇷 França', '🇮🇶 Iraque', '🇳🇴 Noruega', '🇸🇳 Senegal'],
+  J: ['🇩🇿 Argélia', '🇦🇷 Argentina', '🇦🇹 Áustria', '🇯🇴 Jordânia'],
+  K: ['🇨🇴 Colômbia', '🇵🇹 Portugal', '🇨🇩 Rep. Dem. Congo', '🇺🇿 Uzbequistão'],
+  L: ['🇭🇷 Croácia', '🇬🇭 Gana', '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra', '🇵🇦 Panamá'],
+};
+
+// Estrutura OFICIAL do mata-mata 2026 (jogos 73–104).
+// slot: {t:'w'|'ru', g:'X'} (1º/2º do grupo X) ou {t:'3', gs:[...]} (melhor 3º de um dos grupos).
+const KO = {
+  r32: [
+    { m: 73, city: 'Los Angeles', date: '28/06', a: { t: 'ru', g: 'A' }, b: { t: 'ru', g: 'B' } },
+    { m: 74, city: 'Boston', date: '29/06', a: { t: 'w', g: 'E' }, b: { t: '3', gs: ['A','B','C','D','F'] } },
+    { m: 75, city: 'Guadalajara', date: '29/06', a: { t: 'w', g: 'F' }, b: { t: 'ru', g: 'C' } },
+    { m: 76, city: 'Houston', date: '29/06', a: { t: 'w', g: 'C' }, b: { t: 'ru', g: 'F' } },
+    { m: 77, city: 'Nova York-NJ', date: '30/06', a: { t: 'w', g: 'I' }, b: { t: '3', gs: ['C','D','F','G','H'] } },
+    { m: 78, city: 'Dallas', date: '30/06', a: { t: 'ru', g: 'E' }, b: { t: 'ru', g: 'I' } },
+    { m: 79, city: 'Cidade do México', date: '30/06', a: { t: 'w', g: 'A' }, b: { t: '3', gs: ['C','E','F','H','I'] } },
+    { m: 80, city: 'Atlanta', date: '01/07', a: { t: 'w', g: 'L' }, b: { t: '3', gs: ['E','H','I','J','K'] } },
+    { m: 81, city: 'São Francisco', date: '01/07', a: { t: 'w', g: 'D' }, b: { t: '3', gs: ['B','E','F','I','J'] } },
+    { m: 82, city: 'Seattle', date: '01/07', a: { t: 'w', g: 'G' }, b: { t: '3', gs: ['A','E','H','I','J'] } },
+    { m: 83, city: 'Toronto', date: '02/07', a: { t: 'ru', g: 'K' }, b: { t: 'ru', g: 'L' } },
+    { m: 84, city: 'Los Angeles', date: '02/07', a: { t: 'w', g: 'H' }, b: { t: 'ru', g: 'J' } },
+    { m: 85, city: 'Vancouver', date: '02/07', a: { t: 'w', g: 'B' }, b: { t: '3', gs: ['E','F','G','I','J'] } },
+    { m: 86, city: 'Miami', date: '03/07', a: { t: 'w', g: 'J' }, b: { t: 'ru', g: 'H' } },
+    { m: 87, city: 'Kansas City', date: '03/07', a: { t: 'w', g: 'K' }, b: { t: '3', gs: ['D','E','I','J','L'] } },
+    { m: 88, city: 'Dallas', date: '03/07', a: { t: 'ru', g: 'D' }, b: { t: 'ru', g: 'G' } },
+  ],
+  r16: [
+    { m: 89, city: 'Filadélfia', date: '04/07', from: [74, 77] },
+    { m: 90, city: 'Houston', date: '04/07', from: [73, 75] },
+    { m: 91, city: 'Nova York-NJ', date: '05/07', from: [76, 78] },
+    { m: 92, city: 'Cidade do México', date: '05/07', from: [79, 80] },
+    { m: 93, city: 'Dallas', date: '06/07', from: [83, 84] },
+    { m: 94, city: 'Seattle', date: '06/07', from: [81, 82] },
+    { m: 95, city: 'Atlanta', date: '07/07', from: [86, 88] },
+    { m: 96, city: 'Vancouver', date: '07/07', from: [85, 87] },
+  ],
+  qf: [
+    { m: 97, city: 'Boston', date: '09/07', from: [89, 90] },
+    { m: 98, city: 'Los Angeles', date: '10/07', from: [93, 94] },
+    { m: 99, city: 'Miami', date: '11/07', from: [91, 92] },
+    { m: 100, city: 'Kansas City', date: '11/07', from: [95, 96] },
+  ],
+  sf: [
+    { city: 'Dallas', date: '14/07', from: [97, 98] },
+    { city: 'Atlanta', date: '15/07', from: [99, 100] },
+  ],
+  final: { city: 'Nova York (MetLife)', date: '19/07', from: ['SF1', 'SF2'] },
+};
 
 // ===== GLOBAL STATE =====
 let allBets = [];                                  // palpites por participante
@@ -985,6 +1075,69 @@ function setGroupView(btn, idx) {
   panels.forEach((p, i) => p.classList.toggle('active', i === idx));
 }
 
+// ===== RENDER: BRACKET / CHAVEAMENTO =====
+function escapeAttr(s) { return String(s == null ? '' : s).replace(/"/g, '&quot;'); }
+
+function bracketSlotChip(slot) {
+  const confirmedPhase = Date.now() >= new Date('2026-06-28T00:00:00').getTime();
+  if (slot.t === 'w' || slot.t === 'ru') {
+    const g = gabarito.groups[slot.g];
+    const team = g ? (slot.t === 'w' ? g.first : g.second) : null;
+    const posLabel = (slot.t === 'w' ? '1º' : '2º') + ' Grupo ' + slot.g;
+    if (team) {
+      const tag = confirmedPhase ? '<span class="ko-check">✓</span>' : '<span class="ko-prov">provisório</span>';
+      return `<span class="ko-team confirmed" title="${escapeAttr(team + ' — ' + posLabel)}">${team}</span> ${tag}`;
+    }
+    const cands = (GROUP_TEAMS[slot.g] || []).join(', ');
+    return `<span class="ko-slot" title="${escapeAttr(posLabel + ' — ainda indefinido. Candidatos: ' + cands)}">${posLabel}</span>`;
+  }
+  // melhor 3º
+  return `<span class="ko-slot third" title="${escapeAttr('Melhor 3º colocado de um dos grupos ' + slot.gs.join(', ') + '. Definido no fim da fase de grupos (regra da FIFA).')}">3º · ${slot.gs.join('/')}</span>`;
+}
+
+function refLabel(x) {
+  if (x === 'SF1') return 'Vencedor Semifinal 1';
+  if (x === 'SF2') return 'Vencedor Semifinal 2';
+  return 'Vencedor Jogo ' + x;
+}
+
+function bracketR32Card(mt) {
+  return `<div class="ko-match">
+    <div class="ko-match-head"><span class="ko-jogo">Jogo ${mt.m}</span> · ${mt.city} · ${mt.date}</div>
+    <div class="ko-side">${bracketSlotChip(mt.a)}</div>
+    <div class="ko-vs">×</div>
+    <div class="ko-side">${bracketSlotChip(mt.b)}</div>
+  </div>`;
+}
+
+function bracketFlowCard(round, mt) {
+  const head = `${round}${mt.m ? (' · Jogo ' + mt.m) : ''} · ${mt.city} · ${mt.date}`;
+  return `<div class="ko-match">
+    <div class="ko-match-head">${head}</div>
+    <div class="ko-side"><span class="ko-ref">${refLabel(mt.from[0])}</span></div>
+    <div class="ko-vs">×</div>
+    <div class="ko-side"><span class="ko-ref">${refLabel(mt.from[1])}</span></div>
+  </div>`;
+}
+
+function renderBracket() {
+  const el = document.getElementById('bracket-content');
+  if (!el) return;
+  let html = '';
+  html += `<div class="ko-round-title">16-avos de final · 28/06–03/07</div>`;
+  html += `<div class="ko-grid">` + KO.r32.map(bracketR32Card).join('') + `</div>`;
+  html += `<div class="ko-round-title">Oitavas de final · 04–07/07</div>`;
+  html += `<div class="ko-grid">` + KO.r16.map(m => bracketFlowCard('Oitavas', m)).join('') + `</div>`;
+  html += `<div class="ko-round-title">Quartas de final · 09–11/07</div>`;
+  html += `<div class="ko-grid">` + KO.qf.map(m => bracketFlowCard('Quartas', m)).join('') + `</div>`;
+  html += `<div class="ko-round-title">Semifinais · 14–15/07</div>`;
+  html += `<div class="ko-grid">` + KO.sf.map(m => bracketFlowCard('Semifinal', m)).join('') + `</div>`;
+  html += `<div class="ko-round-title">Final · 19/07</div>`;
+  html += `<div class="ko-grid">` + bracketFlowCard('Final', KO.final) + `</div>`;
+  html += `<p style="font-size:11px;color:var(--gray);margin-top:16px;line-height:1.6;">Disputa de 3º lugar: 18/07, em Miami. Os 8 melhores 3ºs e o grupo exato de cada um só são definidos no fim da fase de grupos, pela regra da FIFA — por isso esses confrontos aparecem como "3º · grupos possíveis".</p>`;
+  el.innerHTML = html;
+}
+
 // ===== RENDER: STATISTICS =====
 function renderStats() {
   const el = 'stats-content';
@@ -1185,6 +1338,7 @@ async function loadAll() {
   renderRanking(rankOk);
   renderMatches(gabOk);
   renderGroups(gabOk);
+  renderBracket();
   renderStats();
   updateCountdown();
   updateLastUpdated(statsOk && gabOk && rankOk);
