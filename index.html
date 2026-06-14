@@ -263,6 +263,69 @@ a { color: var(--gold); text-decoration: none; }
 .footer-brand { font-size: 18px; font-weight: 800; color: var(--gold); letter-spacing: 3px; }
 .footer-sub { font-size: 12px; color: var(--gray); margin-top: 6px; }
 
+/* ===== RANKING CLICKABLE ===== */
+.ranking-table tr.clickable { cursor: pointer; }
+.ranking-table tr.clickable .name::after { content: ' ›'; color: var(--gold); opacity: 0; transition: opacity .15s; }
+.ranking-table tr.clickable:hover .name::after { opacity: 1; }
+
+/* ===== PLAYER MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.82); backdrop-filter: blur(4px);
+  display: none; align-items: flex-start; justify-content: center;
+  z-index: 1000; padding: 40px 16px; overflow-y: auto;
+}
+.modal-overlay.open { display: flex; }
+.modal-card {
+  background: var(--dark-card); border: 1px solid var(--gold); border-radius: var(--radius);
+  width: 100%; max-width: 640px; padding: 24px; position: relative; animation: fadeIn .2s ease;
+}
+.modal-close {
+  position: absolute; top: 12px; right: 14px; background: none; border: none;
+  color: var(--gray-light); font-size: 18px; cursor: pointer; line-height: 1;
+}
+.modal-close:hover { color: var(--gold); }
+.pm-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.pm-name { font-size: 20px; font-weight: 800; }
+.pm-rank { font-size: 12px; color: var(--gray); }
+.pm-total { font-size: 40px; font-weight: 900; color: var(--gold); line-height: 1; margin: 10px 0 0; }
+.pm-total-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+.pm-split { display: flex; gap: 6px; margin: 16px 0 4px; height: 30px; }
+.pm-split-seg { border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--black); min-width: 54px; white-space: nowrap; }
+.pm-split-jogos { background: var(--green); }
+.pm-split-grupos { background: var(--gold); }
+.pm-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px,1fr)); gap: 8px; margin: 14px 0 4px; }
+.pm-stat { background: var(--dark-card-hover); border-radius: 8px; padding: 10px 6px; text-align: center; }
+.pm-stat-num { font-size: 22px; font-weight: 900; }
+.pm-stat-lbl { font-size: 10px; color: var(--gray-light); margin-top: 2px; }
+.pm-section-title { font-size: 13px; font-weight: 700; color: var(--gold); margin: 20px 0 6px; }
+.pm-row { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-bottom: 1px solid #1f1f1f; font-size: 13px; }
+.pm-row:last-child { border-bottom: none; }
+.pm-row .pm-main { flex: 1; min-width: 0; }
+.pm-row .pm-label { font-weight: 600; }
+.pm-row .pm-pick { color: var(--gray-light); font-size: 11px; margin-top: 1px; }
+.pm-badge { font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
+.pm-pts { font-weight: 800; min-width: 28px; text-align: right; }
+.b5 { background: var(--green); color: #04210f; }
+.b3 { background: var(--gold); color: #231d00; }
+.b2 { background: #5b8def; color: #fff; }
+.b1 { background: #7a6bd6; color: #fff; }
+.b0 { background: #3a3a3a; color: var(--gray-light); }
+.bp { background: #262626; color: var(--gray); }
+
+/* ===== GROUP TOOLTIP TABS ===== */
+.gt-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.gt-tab { background: #222; border: none; color: var(--gray-light); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; cursor: pointer; }
+.gt-tab.active { background: var(--gold); color: var(--black); }
+.gt-panel { display: none; }
+.gt-panel.active { display: block; }
+.gt-hint { font-size: 10px; color: var(--gray); font-style: italic; margin-bottom: 8px; }
+.gt-voter { display: flex; align-items: center; gap: 8px; font-size: 11px; padding: 5px 0; border-bottom: 1px solid #1a1a1a; }
+.gt-voter:last-child { border-bottom: none; }
+.gt-voter-main { flex: 1; min-width: 0; }
+.gt-voter-name { color: var(--white); font-weight: 600; }
+.gt-voter-pick { color: var(--gray-light); }
+.gt-voter-pts { font-weight: 800; min-width: 22px; text-align: right; }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   .match-card { flex-direction: column; gap: 10px; text-align: center; }
@@ -410,6 +473,14 @@ a { color: var(--gold); text-decoration: none; }
   <div class="footer-sub">Bolão Copa do Mundo 2026 • Feito com ⚽ e 💛</div>
 </footer>
 
+<!-- ===== PLAYER MODAL ===== -->
+<div class="modal-overlay" id="player-modal" onclick="if(event.target===this) closePlayer()">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-label="Detalhes do participante">
+    <button class="modal-close" onclick="closePlayer()" aria-label="Fechar">✕</button>
+    <div id="player-modal-content"></div>
+  </div>
+</div>
+
 <script>
 // ===== CONFIGURATION =====
 const SPREADSHEET_ID = '__SPREADSHEET_ID__';
@@ -467,6 +538,131 @@ function parseGvizDate(v) {
 function showState(elId, msg, isError) {
   document.getElementById(elId).innerHTML =
     `<div class="state-msg${isError ? ' error' : ''}">${msg}${isError ? '<span class="retry-hint">Tentando de novo automaticamente.</span>' : ''}</div>`;
+}
+
+// ===== SCORING (mesmas regras da master — validado contra o ranking oficial) =====
+function sign(x) { return x > 0 ? 1 : x < 0 ? -1 : 0; }
+
+// Resultado real de um jogo já normalizado para Brasil x Adversário.
+function matchReal(i) {
+  const m = gabarito.matches[i];
+  if (!m) return { br: null, opp: null };
+  return i === 2 ? { br: m.s2, opp: m.s1 } : { br: m.s1, opp: m.s2 }; // jogo 3 = Escócia x Brasil
+}
+// Pontua um jogo do Brasil. null = ainda não disputado.
+function scoreMatch(predBr, predOpp, realBr, realOpp) {
+  if (realBr == null || realOpp == null) return null;
+  if (predBr == null || predOpp == null) return { pts: 0, cat: 'Sem palpite', cls: 'b0' };
+  if (predBr === realBr && predOpp === realOpp) return { pts: 5, cat: 'Cravou o placar', cls: 'b5' };
+  if (sign(predBr - predOpp) === sign(realBr - realOpp)) return { pts: 3, cat: 'Acertou o resultado', cls: 'b3' };
+  return { pts: 0, cat: 'Errou', cls: 'b0' };
+}
+// Pontua um grupo. null = grupo ainda não definido.
+function scoreGroup(p1, p2, r1, r2) {
+  if (r1 == null || r1 === '' || r2 == null || r2 === '') return null;
+  if (!p1 || !p2) return { pts: 0, cat: 'Sem palpite', cls: 'b0' };
+  if (p1 === p2) return { pts: 0, cat: 'Zerado · mesmo país em 1º e 2º', cls: 'b0' };
+  if (p1 === r1 && p2 === r2) return { pts: 5, cat: 'Cravou 1º e 2º', cls: 'b5' };
+  if (p1 === r2 && p2 === r1) return { pts: 3, cat: 'Acertou os 2, ordem trocada', cls: 'b3' };
+  if (p1 === r1 || p2 === r2) return { pts: 2, cat: '1 certo na posição', cls: 'b2' };
+  if (p1 === r2 || p2 === r1) return { pts: 1, cat: '1 certo fora da posição', cls: 'b1' };
+  return { pts: 0, cat: 'Errou os dois', cls: 'b0' };
+}
+
+function computeBreakdown(bet) {
+  const games = [
+    scoreMatch(bet.j1_bra, bet.j1_opp, matchReal(0).br, matchReal(0).opp),
+    scoreMatch(bet.j2_bra, bet.j2_opp, matchReal(1).br, matchReal(1).opp),
+    scoreMatch(bet.j3_bra, bet.j3_home, matchReal(2).br, matchReal(2).opp),
+  ];
+  const groups = GROUP_LETTERS.map((L, gi) => {
+    const real = gabarito.groups[L];
+    return scoreGroup(bet.groups[gi].first, bet.groups[gi].second, real ? real.first : null, real ? real.second : null);
+  });
+  const ptsJogos = games.reduce((s, g) => s + (g ? g.pts : 0), 0);
+  const ptsGrupos = groups.reduce((s, g) => s + (g ? g.pts : 0), 0);
+  return { games, groups, ptsJogos, ptsGrupos, total: ptsJogos + ptsGrupos };
+}
+
+// ===== PLAYER MODAL =====
+function openPlayer(name) {
+  const bet = allBets.find(b => b.name === name);
+  const content = document.getElementById('player-modal-content');
+  content.innerHTML = bet ? buildPlayerCard(bet) : `<div class="state-msg">Não encontrei os palpites de ${escapeHtml(name)}.</div>`;
+  document.getElementById('player-modal').classList.add('open');
+}
+function closePlayer() { document.getElementById('player-modal').classList.remove('open'); }
+
+function buildPlayerCard(bet) {
+  const bd = computeBreakdown(bet);
+
+  // posição no ranking (calculada client-side, dinâmica)
+  const totals = allBets.map(b => ({ name: b.name, total: computeBreakdown(b).total })).sort((a, b) => b.total - a.total);
+  const pos = totals.findIndex(t => t.name === bet.name) + 1;
+
+  // contadores para os "gráficos"
+  let cravadas = 0, quase = 0, erros = 0, pendentes = 0;
+  bd.games.concat(bd.groups).forEach(s => {
+    if (!s) { pendentes++; return; }
+    if (s.pts === 5) cravadas++;
+    else if (s.pts > 0) quase++;
+    else erros++;
+  });
+
+  const jLabels = MATCH_NAMES;
+  const jPicks = [
+    `${bet.j1_bra}x${bet.j1_opp}`,
+    `${bet.j2_bra}x${bet.j2_opp}`,
+    `${bet.j3_home}x${bet.j3_bra}`, // Escócia x Brasil
+  ];
+
+  let html = `
+    <div class="pm-head">
+      <span class="pm-name">${escapeHtml(bet.name)}</span>
+      <span class="pm-rank">${pos > 0 ? pos + 'º no ranking' : ''}</span>
+    </div>
+    <div class="pm-total">${bd.total} <span class="pm-total-label">pts</span></div>`;
+
+  // barra de origem dos pontos
+  if (bd.total > 0) {
+    html += `<div class="pm-split">
+      <div class="pm-split-seg pm-split-jogos" style="flex:${bd.ptsJogos || 0.0001}">Jogos ${bd.ptsJogos}</div>
+      <div class="pm-split-seg pm-split-grupos" style="flex:${bd.ptsGrupos || 0.0001}">Grupos ${bd.ptsGrupos}</div>
+    </div>`;
+  }
+
+  // gráfico de contagem
+  html += `<div class="pm-stat-grid">
+    <div class="pm-stat"><div class="pm-stat-num" style="color:var(--green)">${cravadas}</div><div class="pm-stat-lbl">Cravadas</div></div>
+    <div class="pm-stat"><div class="pm-stat-num" style="color:var(--gold)">${quase}</div><div class="pm-stat-lbl">Acertos parciais</div></div>
+    <div class="pm-stat"><div class="pm-stat-num" style="color:var(--red)">${erros}</div><div class="pm-stat-lbl">Erros</div></div>
+    <div class="pm-stat"><div class="pm-stat-num" style="color:var(--gray)">${pendentes}</div><div class="pm-stat-lbl">A definir</div></div>
+  </div>`;
+
+  // jogos do Brasil
+  html += `<div class="pm-section-title">⚽ Jogos do Brasil — ${bd.ptsJogos} pts</div>`;
+  bd.games.forEach((s, i) => {
+    const badge = s ? `<span class="pm-badge ${s.cls}">${s.cat}</span>` : `<span class="pm-badge bp">A jogar</span>`;
+    const pts = s ? s.pts : '—';
+    html += `<div class="pm-row">
+      <div class="pm-main"><div class="pm-label">${jLabels[i]}</div><div class="pm-pick">Seu palpite: ${jPicks[i]}</div></div>
+      ${badge}<span class="pm-pts">${pts}</span>
+    </div>`;
+  });
+
+  // grupos
+  html += `<div class="pm-section-title">🌍 Grupos — ${bd.ptsGrupos} pts</div>`;
+  bd.groups.forEach((s, gi) => {
+    const g = bet.groups[gi];
+    const badge = s ? `<span class="pm-badge ${s.cls}">${s.cat}</span>` : `<span class="pm-badge bp">A definir</span>`;
+    const pts = s ? s.pts : '—';
+    html += `<div class="pm-row">
+      <div class="pm-main"><div class="pm-label">Grupo ${GROUP_LETTERS[gi]}</div><div class="pm-pick">1º ${escapeHtml(g.first || '—')} · 2º ${escapeHtml(g.second || '—')}</div></div>
+      ${badge}<span class="pm-pts">${pts}</span>
+    </div>`;
+  });
+
+  return html;
 }
 
 // ===== FETCH (gviz) =====
@@ -573,7 +769,7 @@ function renderRanking(ok) {
   participants.forEach((p, i) => {
     const cls = i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
     const medal = i < 3 ? `<span class="medal">${medals[i]}</span>` : '';
-    html += `<tr class="${cls}">
+    html += `<tr class="${cls} clickable" data-name="${escapeHtml(p.name)}">
       <td class="pos">${medal || (i + 1)}</td>
       <td class="name">${escapeHtml(p.name)}</td>
       <td class="total">${p.total || 0}</td>
@@ -583,6 +779,7 @@ function renderRanking(ok) {
   });
 
   html += '</tbody></table>';
+  html += '<p style="font-size:11px;color:var(--gray);text-align:center;margin-top:10px;">Toque em um nome para ver os acertos, erros e a soma de pontos.</p>';
   document.getElementById(el).innerHTML = html;
 }
 
@@ -706,7 +903,7 @@ function renderGroups(ok) {
       html += `<div class="group-pending">Aguardando resultados...</div>`;
     }
 
-    html += `</div><div class="group-tooltip">${tooltipHtml}</div></div>`;
+    html += `</div><div class="group-tooltip" onclick="event.stopPropagation()">${tooltipHtml}</div></div>`;
   }
 
   if (!anyData && !ok && allBets.length === 0) {
@@ -720,14 +917,16 @@ function buildGroupTooltip(groupIdx) {
   if (allBets.length === 0) return '<div style="color:var(--gray);font-size:12px;">Sem palpites para mostrar ainda.</div>';
 
   const total = allBets.length;
-  let firstCounts = {}, secondCounts = {};
+  const letter = GROUP_LETTERS[groupIdx];
+  const real = gabarito.groups[letter];
 
+  // ---- Painel 1: distribuição dos votos ----
+  let firstCounts = {}, secondCounts = {};
   allBets.forEach(bet => {
     const grp = bet.groups[groupIdx];
     if (grp.first) firstCounts[grp.first] = (firstCounts[grp.first] || 0) + 1;
     if (grp.second) secondCounts[grp.second] = (secondCounts[grp.second] || 0) + 1;
   });
-
   const sortedFirst = Object.entries(firstCounts).sort((a,b) => b[1] - a[1]);
   const sortedSecond = Object.entries(secondCounts).sort((a,b) => b[1] - a[1]);
 
@@ -743,8 +942,47 @@ function buildGroupTooltip(groupIdx) {
     });
     return h + '</div>';
   }
+  const distHtml = barSection('🥇 Votado como 1º', sortedFirst) + barSection('🥈 Votado como 2º', sortedSecond);
 
-  return barSection('🥇 Votado como 1º', sortedFirst) + barSection('🥈 Votado como 2º', sortedSecond);
+  // ---- Painel 2: quem votou em quem + pontos atuais ----
+  const decidido = !!(real && real.first && real.second);
+  const voters = allBets.map(bet => {
+    const g = bet.groups[groupIdx];
+    const sc = scoreGroup(g.first, g.second, real ? real.first : null, real ? real.second : null);
+    return { name: bet.name, first: g.first, second: g.second, pts: sc ? sc.pts : null };
+  }).sort((a, b) => (b.pts || 0) - (a.pts || 0));
+
+  let votHtml = decidido
+    ? `<div class="gt-hint">Pontos somam ao vivo conforme as regras deste grupo.</div>`
+    : `<div class="gt-hint">Grupo ainda não definido — os pontos somam quando o resultado sair.</div>`;
+  voters.forEach(v => {
+    const ptsTxt = (v.pts == null) ? '—' : v.pts;
+    const cls = v.pts === 5 ? 'b5' : v.pts === 3 ? 'b3' : v.pts === 2 ? 'b2' : v.pts === 1 ? 'b1' : '';
+    votHtml += `<div class="gt-voter">
+      <div class="gt-voter-main">
+        <span class="gt-voter-name">${escapeHtml(v.name)}</span>
+        <div class="gt-voter-pick">1º ${escapeHtml(v.first || '—')} · 2º ${escapeHtml(v.second || '—')}</div>
+      </div>
+      <span class="gt-voter-pts ${cls}" style="${cls ? 'padding:1px 7px;border-radius:20px;' : ''}">${ptsTxt}</span>
+    </div>`;
+  });
+
+  // ---- Abas (stopPropagation para não fechar o card) ----
+  return `
+    <div class="gt-tabs">
+      <button class="gt-tab active" onclick="event.stopPropagation(); setGroupView(this,0)">Distribuição</button>
+      <button class="gt-tab" onclick="event.stopPropagation(); setGroupView(this,1)">Quem votou</button>
+    </div>
+    <div class="gt-panel active">${distHtml}</div>
+    <div class="gt-panel">${votHtml}</div>`;
+}
+
+function setGroupView(btn, idx) {
+  const tabs = btn.parentElement;
+  const wrap = tabs.parentElement;
+  Array.prototype.forEach.call(tabs.children, (b, i) => b.classList.toggle('active', i === idx));
+  const panels = wrap.querySelectorAll('.gt-panel');
+  panels.forEach((p, i) => p.classList.toggle('active', i === idx));
 }
 
 // ===== RENDER: STATISTICS =====
@@ -933,6 +1171,13 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
 document.querySelectorAll('.rule-header').forEach(header => {
   header.addEventListener('click', () => header.parentElement.classList.toggle('open'));
 });
+
+// ===== RANKING: abrir modal ao clicar no participante =====
+document.getElementById('ranking').addEventListener('click', (e) => {
+  const tr = e.target.closest('tr.clickable');
+  if (tr && tr.dataset.name) openPlayer(tr.dataset.name);
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePlayer(); });
 
 // ===== INIT & AUTO-REFRESH =====
 async function loadAll() {
