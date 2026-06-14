@@ -453,6 +453,9 @@ function cellVal(row, i) {
   return (row && row.c && row.c[i] && row.c[i].v != null) ? row.c[i].v : null;
 }
 function isNumeric(v) { return v != null && v !== '' && !isNaN(v); }
+// Coage placares a número. O gviz devolve colunas mistas (texto+número) como
+// STRING — sem isto, comparar placar do Gabarito ("1") com palpite (1) falha.
+function toNum(v) { return (v == null || v === '' || isNaN(v)) ? null : Number(v); }
 function parseGvizDate(v) {
   if (v == null) return null;
   if (v instanceof Date) return v;
@@ -493,9 +496,9 @@ async function loadStatsData() {
       const name = g(0);
       return {
         name,
-        j1_bra: g(2), j1_opp: g(3),
-        j2_bra: g(4), j2_opp: g(5),
-        j3_home: g(6), j3_bra: g(7),
+        j1_bra: toNum(g(2)), j1_opp: toNum(g(3)),
+        j2_bra: toNum(g(4)), j2_opp: toNum(g(5)),
+        j3_home: toNum(g(6)), j3_bra: toNum(g(7)),
         groups: GROUP_LETTERS.map((_, gi) => ({ first: g(8 + gi*2), second: g(9 + gi*2) }))
       };
     })
@@ -517,9 +520,9 @@ async function loadGabarito() {
     const low = label.toLowerCase();
     const b = cellVal(r, 1), c = cellVal(r, 2);
 
-    if (low.includes('marrocos')) g.matches[0] = { s1: b, s2: c };
-    else if (low.includes('haiti')) g.matches[1] = { s1: b, s2: c };
-    else if (low.includes('esc')) g.matches[2] = { s1: b, s2: c }; // Escócia x Brasil
+    if (low.includes('marrocos')) g.matches[0] = { s1: toNum(b), s2: toNum(c) };
+    else if (low.includes('haiti')) g.matches[1] = { s1: toNum(b), s2: toNum(c) };
+    else if (low.includes('esc')) g.matches[2] = { s1: toNum(b), s2: toNum(c) }; // Escócia x Brasil
 
     const gm = label.match(/grupo\s*([a-l])/i);
     if (gm) g.groups[gm[1].toUpperCase()] = { first: b, second: c };
