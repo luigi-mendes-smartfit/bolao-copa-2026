@@ -343,6 +343,95 @@ a { color: var(--gold); text-decoration: none; }
 .ko-slot.third { border-style: dotted; color: var(--gray); }
 .ko-ref { color: var(--gray-light); font-size: 12px; font-style: italic; }
 
+/* ===== CERIMÔNIA DE ENCERRAMENTO ===== */
+.cer-overlay {
+  position: fixed; inset: 0; z-index: 2000; display: none;
+  background: radial-gradient(ellipse at center, #1a1500 0%, #050505 60%, #000 100%);
+  overflow: hidden; align-items: center; justify-content: center;
+}
+.cer-overlay.open { display: flex; }
+.cer-glow {
+  position: absolute; top: 50%; left: 50%; width: 120vmin; height: 120vmin;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255,209,0,0.18) 0%, rgba(255,209,0,0.05) 35%, transparent 65%);
+  pointer-events: none; animation: cerGlowPulse 4s ease-in-out infinite;
+}
+@keyframes cerGlowPulse { 0%,100% { opacity: .55; transform: translate(-50%,-50%) scale(1); } 50% { opacity: 1; transform: translate(-50%,-50%) scale(1.08); } }
+.cer-particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.cer-particle {
+  position: absolute; bottom: -12px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 8px 2px rgba(255,209,0,0.6);
+  animation: cerFloat linear infinite;
+}
+@keyframes cerFloat {
+  0% { transform: translateY(0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: .7; }
+  100% { transform: translateY(-104vh) scale(.4); opacity: 0; }
+}
+.cer-skip {
+  position: absolute; top: 18px; right: 20px; z-index: 5;
+  background: rgba(255,255,255,0.06); border: 1px solid #333; color: var(--gray-light);
+  font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 50px; cursor: pointer;
+  transition: all .2s; backdrop-filter: blur(6px);
+}
+.cer-skip:hover { color: var(--gold); border-color: var(--gold); }
+.cer-stage {
+  position: relative; z-index: 3; width: 100%; max-width: 720px; padding: 24px;
+  text-align: center; max-height: 100vh; overflow-y: auto;
+}
+.cer-reveal { animation: cerReveal .7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+@keyframes cerReveal { 0% { opacity: 0; transform: translateY(28px) scale(.92); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+
+.cer-trophy { font-size: 96px; line-height: 1; filter: drop-shadow(0 0 24px rgba(255,209,0,0.7)); animation: cerTrophy 3s ease-in-out infinite; }
+@keyframes cerTrophy { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-12px) rotate(2deg); } }
+.cer-trophy.pop { animation: cerTrophyPop 1s cubic-bezier(0.34,1.56,0.64,1) both, cerTrophy 3s ease-in-out 1s infinite; }
+@keyframes cerTrophyPop { 0% { transform: scale(0) rotate(-30deg); opacity: 0; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+
+.cer-brand { font-size: 13px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 8px; }
+.cer-title { font-size: clamp(26px, 6vw, 46px); font-weight: 900; margin: 10px 0 6px; }
+.cer-title span { color: var(--gold); }
+.cer-sub { color: var(--gray-light); font-size: 15px; }
+.cer-step-label { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--gray); font-weight: 700; margin-bottom: 18px; }
+
+.cer-medal { font-size: 72px; line-height: 1; filter: drop-shadow(0 0 18px rgba(255,209,0,0.5)); }
+.cer-winner-name { font-size: clamp(26px, 6vw, 42px); font-weight: 900; margin: 12px 0 4px; }
+.cer-winner-pts { font-size: 18px; color: var(--gold); font-weight: 800; }
+.cer-winner-prize { display: inline-block; margin-top: 12px; background: rgba(255,209,0,0.12); border: 1px solid var(--gold); color: var(--gold); font-weight: 800; font-size: 15px; padding: 8px 18px; border-radius: 50px; }
+
+/* pódio */
+.cer-podium { display: flex; align-items: flex-end; justify-content: center; gap: 10px; margin: 24px 0 8px; }
+.cer-podium-col { display: flex; flex-direction: column; align-items: center; width: 30%; max-width: 180px; }
+.cer-podium-medal { font-size: 38px; }
+.cer-podium-name { font-size: 13px; font-weight: 700; margin: 6px 0 2px; min-height: 32px; display: flex; align-items: center; text-align: center; }
+.cer-podium-pts { font-size: 12px; color: var(--gold); font-weight: 800; margin-bottom: 8px; }
+.cer-podium-bar { width: 100%; border-radius: 8px 8px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 8px; font-size: 22px; font-weight: 900; color: var(--black); transform-origin: bottom; animation: cerBarGrow .8s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes cerBarGrow { 0% { transform: scaleY(0); } 100% { transform: scaleY(1); } }
+.cer-bar-1 { height: 150px; background: linear-gradient(180deg, #FFE45c, var(--gold)); }
+.cer-bar-2 { height: 110px; background: linear-gradient(180deg, #e8e8e8, #b8b8b8); }
+.cer-bar-3 { height: 80px; background: linear-gradient(180deg, #e8a25c, #cd7f32); }
+
+/* estatísticas finais */
+.cer-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 10px; margin: 18px 0; }
+.cer-stat { background: rgba(255,255,255,0.04); border: 1px solid #2a2a2a; border-radius: 10px; padding: 12px; }
+.cer-stat-num { font-size: 24px; font-weight: 900; color: var(--gold); }
+.cer-stat-lbl { font-size: 11px; color: var(--gray-light); margin-top: 2px; }
+
+.cer-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+.cer-btn { font-size: 14px; font-weight: 700; padding: 12px 24px; border-radius: 50px; cursor: pointer; border: 1px solid var(--gold); transition: all .2s; }
+.cer-btn.primary { background: var(--gold); color: var(--black); }
+.cer-btn.primary:hover { background: #ffdf3a; }
+.cer-btn.ghost { background: transparent; color: var(--gold); }
+.cer-btn.ghost:hover { background: rgba(255,209,0,0.12); }
+
+/* botão rever cerimônia no dashboard */
+.cer-replay-btn {
+  display: none; align-items: center; gap: 6px; margin: 14px auto 0;
+  background: var(--dark-card); border: 1px solid var(--gold); color: var(--gold);
+  font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: all .2s;
+}
+.cer-replay-btn:hover { background: rgba(255,209,0,0.12); }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   .match-card { flex-direction: column; gap: 10px; text-align: center; }
@@ -391,6 +480,7 @@ a { color: var(--gold); text-decoration: none; }
     <div class="loading-shimmer" style="height:40px;margin-bottom:12px"></div>
   </div>
   <div class="last-updated" id="last-updated"><span class="refresh-dot"></span>Atualiza automaticamente a cada 5 min</div>
+  <button class="cer-replay-btn" id="cer-replay">🏆 Ver cerimônia de encerramento</button>
 </div>
 
 <!-- ===== MATCHES SECTION ===== -->
@@ -502,6 +592,14 @@ a { color: var(--gold); text-decoration: none; }
   <div class="footer-sub">Bolão Copa do Mundo 2026 • Feito com ⚽ e 💛</div>
 </footer>
 
+<!-- ===== CERIMÔNIA DE ENCERRAMENTO ===== -->
+<div class="cer-overlay" id="cer-overlay" role="dialog" aria-modal="true" aria-label="Cerimônia de encerramento">
+  <div class="cer-glow"></div>
+  <div class="cer-particles" id="cer-particles"></div>
+  <button class="cer-skip" id="cer-skip">Pular animação ✕</button>
+  <div class="cer-stage" id="cer-stage"></div>
+</div>
+
 <!-- ===== PLAYER MODAL ===== -->
 <div class="modal-overlay" id="player-modal" onclick="if(event.target===this) closePlayer()">
   <div class="modal-card" role="dialog" aria-modal="true" aria-label="Detalhes do participante">
@@ -510,9 +608,17 @@ a { color: var(--gold); text-decoration: none; }
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
 // ===== CONFIGURATION =====
 const SPREADSHEET_ID = '__SPREADSHEET_ID__';
+
+// ===== FLAG OFICIAL DE ENCERRAMENTO =====
+// Vire { ativo: true } SOMENTE quando: todos os jogos finalizados,
+// ranking congelado e premiação confirmada. Aí a cerimônia abre sozinha
+// na primeira visita de cada pessoa (e fica o botão "rever" no ranking).
+const ENCERRAMENTO = { ativo: false };
+const CEREMONY_KEY = 'bolao2026_ceremony_seen';
 
 // Abas na planilha PÚBLICA (espelho da master via QUERY/IMPORTRANGE).
 const SHEET_RANKING = 'Ranking';
@@ -1281,6 +1387,184 @@ function renderStats() {
   document.getElementById(el).innerHTML = html;
 }
 
+// ===== CERIMÔNIA DE ENCERRAMENTO =====
+let cerData = null;
+let cerTimers = [];
+let cerAutoChecked = false;
+
+function cerClearTimers() { cerTimers.forEach(clearTimeout); cerTimers = []; }
+function cerMoney(v) { return 'R$ ' + (Math.round(v * 100) / 100).toFixed(2).replace('.', ','); }
+function cerFirstName(n) { return String(n || '').trim().split(/\s+/)[0]; }
+
+function cerSortRanking() {
+  return rankingRows.slice().sort((a, b) =>
+    (b.total || 0) - (a.total || 0) ||
+    (b.placares || 0) - (a.placares || 0) ||
+    (b.posicoes || 0) - (a.posicoes || 0) ||
+    ((a.ts ? a.ts.getTime() : Infinity) - (b.ts ? b.ts.getTime() : Infinity)));
+}
+
+function cerComputeData() {
+  const ps = cerSortRanking();
+  const totalPart = rankingRows.length;
+  const pot = totalPart * 20;
+  let mestre = null, mestreN = -1;
+  allBets.forEach(b => {
+    const bd = computeBreakdown(b);
+    const c = bd.games.concat(bd.groups).filter(s => s && s.pts === 5).length;
+    if (c > mestreN) { mestreN = c; mestre = b.name; }
+  });
+  return { top3: ps.slice(0, 3), totalPart, pot, prizes: [pot * 0.5, pot * 0.3, pot * 0.2], mestre, mestreN };
+}
+
+function cerConfetti(opts) {
+  if (!window.confetti) return;
+  confetti(Object.assign({ colors: ['#FFD100', '#C9A500', '#ffffff', '#E8C547'], disableForReducedMotion: true, zIndex: 2100 }, opts || {}));
+}
+function cerConfettiSides() {
+  cerConfetti({ particleCount: 60, angle: 60, spread: 70, origin: { x: 0, y: 0.7 } });
+  cerConfetti({ particleCount: 60, angle: 120, spread: 70, origin: { x: 1, y: 0.7 } });
+}
+
+function cerStartParticles() {
+  const box = document.getElementById('cer-particles');
+  box.innerHTML = '';
+  for (let i = 0; i < 34; i++) {
+    const p = document.createElement('span');
+    p.className = 'cer-particle';
+    const dur = 6 + Math.random() * 7, sz = 4 + Math.random() * 7;
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.animationDuration = dur + 's';
+    p.style.animationDelay = (-Math.random() * dur) + 's';
+    p.style.width = p.style.height = sz + 'px';
+    p.style.opacity = (0.4 + Math.random() * 0.6).toFixed(2);
+    box.appendChild(p);
+  }
+}
+function cerStopParticles() { document.getElementById('cer-particles').innerHTML = ''; }
+
+function cerStageHTML(inner) { document.getElementById('cer-stage').innerHTML = `<div class="cer-reveal">${inner}</div>`; }
+
+function cerStepOpening() {
+  cerStageHTML(`
+    <div class="cer-trophy pop">🏆</div>
+    <div class="cer-brand">SMART FIT</div>
+    <div class="cer-title">Bolão <span>Copa 2026</span></div>
+    <div class="cer-sub">A bola parou. Hora de revelar os campeões.</div>`);
+}
+
+function cerStepWinner(idx) {
+  const d = cerData, p = d.top3[idx];
+  const medals = ['🥇', '🥈', '🥉'];
+  const labels = ['1º LUGAR · CAMPEÃO', '2º LUGAR', '3º LUGAR'];
+  if (!p) { cerStageHTML('<div class="cer-sub">Sem participantes suficientes para o pódio.</div>'); return; }
+  cerStageHTML(`
+    <div class="cer-step-label">${labels[idx]}</div>
+    <div class="cer-medal">${medals[idx]}</div>
+    <div class="cer-winner-name">${escapeHtml(p.name)}</div>
+    <div class="cer-winner-pts">${p.total || 0} pontos</div>
+    <div class="cer-winner-prize">${cerMoney(d.prizes[idx])}</div>`);
+}
+
+function cerPodiumCol(p, bar, medal) {
+  return `<div class="cer-podium-col">
+    <div class="cer-podium-medal">${medal}</div>
+    <div class="cer-podium-name">${p ? escapeHtml(p.name) : '—'}</div>
+    <div class="cer-podium-pts">${p ? (p.total || 0) + ' pts' : ''}</div>
+    <div class="cer-podium-bar ${bar}"></div>
+  </div>`;
+}
+
+function cerStepPodium() {
+  const [p1, p2, p3] = cerData.top3;
+  cerStageHTML(`
+    <div class="cer-step-label">PÓDIO FINAL</div>
+    <div class="cer-podium">
+      ${cerPodiumCol(p2, 'cer-bar-2', '🥈')}
+      ${cerPodiumCol(p1, 'cer-bar-1', '🥇')}
+      ${cerPodiumCol(p3, 'cer-bar-3', '🥉')}
+    </div>`);
+}
+
+function cerStepFinal() {
+  const d = cerData, [p1, p2, p3] = d.top3;
+  const mestreTxt = (d.mestre && d.mestreN > 0) ? cerFirstName(d.mestre) + ' (' + d.mestreN + ')' : '—';
+  cerStageHTML(`
+    <div class="cer-trophy">🏆</div>
+    <div class="cer-title" style="font-size:clamp(22px,5vw,34px)">Pódio <span>Final</span></div>
+    <div class="cer-podium">
+      ${cerPodiumCol(p2, 'cer-bar-2', '🥈')}
+      ${cerPodiumCol(p1, 'cer-bar-1', '🥇')}
+      ${cerPodiumCol(p3, 'cer-bar-3', '🥉')}
+    </div>
+    <div class="cer-stats">
+      <div class="cer-stat"><div class="cer-stat-num">${d.totalPart}</div><div class="cer-stat-lbl">Participantes</div></div>
+      <div class="cer-stat"><div class="cer-stat-num">${cerMoney(d.pot)}</div><div class="cer-stat-lbl">Premiação total</div></div>
+      <div class="cer-stat"><div class="cer-stat-num">🎯</div><div class="cer-stat-lbl">Mestre da cravada<br>${escapeHtml(mestreTxt)}</div></div>
+    </div>
+    <div class="cer-actions">
+      <button class="cer-btn primary" id="cer-go-ranking">Ver Ranking Final</button>
+      <button class="cer-btn ghost" id="cer-close">Fechar</button>
+    </div>`);
+  document.getElementById('cer-go-ranking').onclick = () => {
+    closeCeremony();
+    const t = document.querySelector('.nav-tab[data-tab="ranking"]');
+    if (t) activateTab(t);
+  };
+  document.getElementById('cer-close').onclick = closeCeremony;
+}
+
+function cerRunSequence() {
+  cerClearTimers();
+  cerStepOpening();
+  const seq = [
+    [3400, () => cerStepWinner(2)],
+    [3600, () => cerStepWinner(1)],
+    [3600, () => { cerStepWinner(0); cerConfettiSides(); cerConfetti({ particleCount: 120, spread: 100, origin: { y: 0.5 } }); }],
+    [4200, () => { cerStepPodium(); cerConfettiSides(); }],
+    [4200, () => cerStepFinal()],
+  ];
+  let acc = 0;
+  seq.forEach(([delay, fn]) => { acc += delay; cerTimers.push(setTimeout(fn, acc)); });
+}
+
+function openCeremony() {
+  if (rankingRows.length < 1) return;
+  cerData = cerComputeData();
+  document.getElementById('cer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  cerStartParticles();
+  try { localStorage.setItem(CEREMONY_KEY, '1'); } catch (e) {}
+  cerConfetti({ particleCount: 80, spread: 90, origin: { y: 0.4 } });
+  cerRunSequence();
+}
+function skipCeremony() { cerClearTimers(); cerStepFinal(); cerConfettiSides(); }
+function closeCeremony() {
+  cerClearTimers();
+  document.getElementById('cer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  cerStopParticles();
+}
+
+function maybeOpenCeremony() {
+  if (!ENCERRAMENTO.ativo) return;
+  const btn = document.getElementById('cer-replay');
+  if (btn) btn.style.display = 'inline-flex'; // libera o "rever" no dashboard
+  if (cerAutoChecked) return;
+  cerAutoChecked = true;
+  if (rankingRows.length < 1) return;
+  let seen = false;
+  try { seen = !!localStorage.getItem(CEREMONY_KEY); } catch (e) {}
+  if (seen) return;
+  openCeremony();
+}
+
+document.getElementById('cer-skip').addEventListener('click', skipCeremony);
+document.getElementById('cer-replay').addEventListener('click', openCeremony);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('cer-overlay').classList.contains('open')) closeCeremony();
+});
+
 // ===== COUNTDOWN =====
 function updateCountdown() {
   const now = new Date();
@@ -1342,6 +1626,7 @@ async function loadAll() {
   renderStats();
   updateCountdown();
   updateLastUpdated(statsOk && gabOk && rankOk);
+  maybeOpenCeremony();
 }
 
 loadAll();
