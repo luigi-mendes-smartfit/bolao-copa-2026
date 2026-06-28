@@ -341,6 +341,7 @@ a { color: var(--gold); text-decoration: none; }
 .ko-prov { font-size: 9px; color: var(--gold); border: 1px solid var(--gold); border-radius: 10px; padding: 0 6px; }
 .ko-slot { color: var(--gray-light); font-size: 12px; border: 1px dashed #3a3a3a; border-radius: 6px; padding: 2px 8px; cursor: help; }
 .ko-slot.third { border-style: dotted; color: var(--gray); }
+.ko-3rd-tag { font-size: 9px; font-weight: 700; color: var(--black); background: var(--gray-light); border-radius: 8px; padding: 0 5px; }
 .ko-ref { color: var(--gray-light); font-size: 12px; font-style: italic; }
 
 /* ===== CERIMÔNIA DE ENCERRAMENTO ===== */
@@ -617,7 +618,7 @@ const SPREADSHEET_ID = '__SPREADSHEET_ID__';
 // Vire { ativo: true } SOMENTE quando: todos os jogos finalizados,
 // ranking congelado e premiação confirmada. Aí a cerimônia abre sozinha
 // na primeira visita de cada pessoa (e fica o botão "rever" no ranking).
-const ENCERRAMENTO = { ativo: false };
+const ENCERRAMENTO = { ativo: true };
 const CEREMONY_KEY = 'bolao2026_ceremony_seen';
 
 // Abas na planilha PÚBLICA (espelho da master via QUERY/IMPORTRANGE).
@@ -667,20 +668,20 @@ const GROUP_TEAMS = {
 const KO = {
   r32: [
     { m: 73, city: 'Los Angeles', date: '28/06', a: { t: 'ru', g: 'A' }, b: { t: 'ru', g: 'B' } },
-    { m: 74, city: 'Boston', date: '29/06', a: { t: 'w', g: 'E' }, b: { t: '3', gs: ['A','B','C','D','F'] } },
+    { m: 74, city: 'Boston', date: '29/06', a: { t: 'w', g: 'E' }, b: { t: '3', gs: ['A','B','C','D','F'], team: '🇵🇾 Paraguai', from: 'D' } },
     { m: 75, city: 'Guadalajara', date: '29/06', a: { t: 'w', g: 'F' }, b: { t: 'ru', g: 'C' } },
     { m: 76, city: 'Houston', date: '29/06', a: { t: 'w', g: 'C' }, b: { t: 'ru', g: 'F' } },
-    { m: 77, city: 'Nova York-NJ', date: '30/06', a: { t: 'w', g: 'I' }, b: { t: '3', gs: ['C','D','F','G','H'] } },
+    { m: 77, city: 'Nova York-NJ', date: '30/06', a: { t: 'w', g: 'I' }, b: { t: '3', gs: ['C','D','F','G','H'], team: '🇸🇪 Suécia', from: 'F' } },
     { m: 78, city: 'Dallas', date: '30/06', a: { t: 'ru', g: 'E' }, b: { t: 'ru', g: 'I' } },
-    { m: 79, city: 'Cidade do México', date: '30/06', a: { t: 'w', g: 'A' }, b: { t: '3', gs: ['C','E','F','H','I'] } },
-    { m: 80, city: 'Atlanta', date: '01/07', a: { t: 'w', g: 'L' }, b: { t: '3', gs: ['E','H','I','J','K'] } },
-    { m: 81, city: 'São Francisco', date: '01/07', a: { t: 'w', g: 'D' }, b: { t: '3', gs: ['B','E','F','I','J'] } },
-    { m: 82, city: 'Seattle', date: '01/07', a: { t: 'w', g: 'G' }, b: { t: '3', gs: ['A','E','H','I','J'] } },
+    { m: 79, city: 'Cidade do México', date: '30/06', a: { t: 'w', g: 'A' }, b: { t: '3', gs: ['C','E','F','H','I'], team: '🇪🇨 Equador', from: 'E' } },
+    { m: 80, city: 'Atlanta', date: '01/07', a: { t: 'w', g: 'L' }, b: { t: '3', gs: ['E','H','I','J','K'], team: '🇨🇩 Rep. Dem. Congo', from: 'K' } },
+    { m: 81, city: 'São Francisco', date: '01/07', a: { t: 'w', g: 'D' }, b: { t: '3', gs: ['B','E','F','I','J'], team: '🇧🇦 Bósnia e Herz.', from: 'B' } },
+    { m: 82, city: 'Seattle', date: '01/07', a: { t: 'w', g: 'G' }, b: { t: '3', gs: ['A','E','H','I','J'], team: '🇸🇳 Senegal', from: 'I' } },
     { m: 83, city: 'Toronto', date: '02/07', a: { t: 'ru', g: 'K' }, b: { t: 'ru', g: 'L' } },
     { m: 84, city: 'Los Angeles', date: '02/07', a: { t: 'w', g: 'H' }, b: { t: 'ru', g: 'J' } },
-    { m: 85, city: 'Vancouver', date: '02/07', a: { t: 'w', g: 'B' }, b: { t: '3', gs: ['E','F','G','I','J'] } },
+    { m: 85, city: 'Vancouver', date: '02/07', a: { t: 'w', g: 'B' }, b: { t: '3', gs: ['E','F','G','I','J'], team: '🇩🇿 Argélia', from: 'J' } },
     { m: 86, city: 'Miami', date: '03/07', a: { t: 'w', g: 'J' }, b: { t: 'ru', g: 'H' } },
-    { m: 87, city: 'Kansas City', date: '03/07', a: { t: 'w', g: 'K' }, b: { t: '3', gs: ['D','E','I','J','L'] } },
+    { m: 87, city: 'Kansas City', date: '03/07', a: { t: 'w', g: 'K' }, b: { t: '3', gs: ['D','E','I','J','L'], team: '🇬🇭 Gana', from: 'L' } },
     { m: 88, city: 'Dallas', date: '03/07', a: { t: 'ru', g: 'D' }, b: { t: 'ru', g: 'G' } },
   ],
   r16: [
@@ -1198,6 +1199,10 @@ function bracketSlotChip(slot) {
     return `<span class="ko-slot" title="${escapeAttr(posLabel + ' — ainda indefinido. Candidatos: ' + cands)}">${posLabel}</span>`;
   }
   // melhor 3º
+  if (slot.team) {
+    const tag = confirmedPhase ? '<span class="ko-check">✓</span>' : '<span class="ko-prov">provisório</span>';
+    return `<span class="ko-team confirmed" title="${escapeAttr(slot.team + ' — melhor 3º (Grupo ' + slot.from + ')')}">${slot.team}</span> <span class="ko-3rd-tag">3º</span> ${tag}`;
+  }
   return `<span class="ko-slot third" title="${escapeAttr('Melhor 3º colocado de um dos grupos ' + slot.gs.join(', ') + '. Definido no fim da fase de grupos (regra da FIFA).')}">3º · ${slot.gs.join('/')}</span>`;
 }
 
@@ -1240,7 +1245,7 @@ function renderBracket() {
   html += `<div class="ko-grid">` + KO.sf.map(m => bracketFlowCard('Semifinal', m)).join('') + `</div>`;
   html += `<div class="ko-round-title">Final · 19/07</div>`;
   html += `<div class="ko-grid">` + bracketFlowCard('Final', KO.final) + `</div>`;
-  html += `<p style="font-size:11px;color:var(--gray);margin-top:16px;line-height:1.6;">Disputa de 3º lugar: 18/07, em Miami. Os 8 melhores 3ºs e o grupo exato de cada um só são definidos no fim da fase de grupos, pela regra da FIFA — por isso esses confrontos aparecem como "3º · grupos possíveis".</p>`;
+  html += `<p style="font-size:11px;color:var(--gray);margin-top:16px;line-height:1.6;">Disputa de 3º lugar: 18/07, em Miami. Os 8 melhores 3ºs já estão definidos (regra da FIFA) e aparecem marcados com <span class="ko-3rd-tag">3º</span>.</p>`;
   el.innerHTML = html;
 }
 
