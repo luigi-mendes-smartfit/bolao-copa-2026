@@ -427,7 +427,7 @@ a { color: var(--gold); text-decoration: none; }
 
 /* botão rever cerimônia no dashboard */
 .cer-replay-btn {
-  display: none; align-items: center; gap: 6px; margin: 14px auto 0;
+  display: none; align-items: center; gap: 6px; margin: 0 auto 18px;
   background: var(--dark-card); border: 1px solid var(--gold); color: var(--gold);
   font-size: 12px; font-weight: 700; padding: 8px 16px; border-radius: 50px; cursor: pointer; transition: all .2s;
 }
@@ -475,13 +475,13 @@ a { color: var(--gold); text-decoration: none; }
 <!-- ===== RANKING SECTION ===== -->
 <div class="section active" id="ranking">
   <div class="section-title">🏅 Ranking ao Vivo</div>
+  <button class="cer-replay-btn" id="cer-replay">🏆 Ver cerimônia de encerramento</button>
   <div id="ranking-content">
     <div class="loading-shimmer" style="height:40px;margin-bottom:12px"></div>
     <div class="loading-shimmer" style="height:40px;margin-bottom:12px"></div>
     <div class="loading-shimmer" style="height:40px;margin-bottom:12px"></div>
   </div>
   <div class="last-updated" id="last-updated"><span class="refresh-dot"></span>Atualiza automaticamente a cada 5 min</div>
-  <button class="cer-replay-btn" id="cer-replay">🏆 Ver cerimônia de encerramento</button>
 </div>
 
 <!-- ===== MATCHES SECTION ===== -->
